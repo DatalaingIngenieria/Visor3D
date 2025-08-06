@@ -4,7 +4,11 @@ Aplicación realizada en base al Framework de desarrollo Web Angular, en su más
 
 Librerías Principales: Three.JS; PrimeNG, Tailwind.CSS
 
+Link ThreeJS: https://threejs.org/docs/
+
 Librerías Secundarias: @loaders.gl/core; @loaders.gl/las; web-ifc
+
+Link @loaders.gl: https://loaders.gl/docs
 
 # Archivos Validados
 
