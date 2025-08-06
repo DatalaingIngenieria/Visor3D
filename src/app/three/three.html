@@ -1,0 +1,51 @@
+<section class="w-auto ">
+    <div class="relative">
+        <p-panel [styleClass]="'w-85 absolute top-35 left-5 p-0'" [toggleable]="true">
+            <ng-template #header>
+                <div class="flex items-center">
+                    <h3 class="text-2xl font-semibold">Opciones</h3>
+                </div>
+            </ng-template>
+            <div class="w-full py-4 px-0 flex justify-between border-y-2 border-stone-300">
+                <input type="file" id="modelInput" (change)="onFileSelect($event)"
+                    accept=".las,.laz,.3dm, .obj, .fbx, .gltf" hidden>
+                <label for="modelInput" class="text-xl font-medium">Seleccionar Modelo</label>
+                <select id="formatSelector" class="w-27 bg-stone-100 outline-none" [pTooltip]="toolTipText"
+                    (change)="onFormatChange($event)">
+                    <option value="3dm" pTooltip="Formato de archivo para modelos 3D">3DM</option>
+                    <option value="obj">OBJ</option>
+                    <option value="gltf">glTF</option>
+                    <option value="fbx">FBX</option>
+                    <option value="las">LAS</option>
+                </select>
+            </div>
+            <div class="w-full py-4 px-0 flex flex-col items-center border-b-2 border-stone-300">
+                <p-button label="Quitar Modelo Actual" severity="secondary" (click)="deleteActualModel()" />
+            </div>
+            <div class="w-full h-25 py-4 px-0 flex flex-col justify-around border-b-2 border-stone-300">
+                <p class="text-xl font-medium">Malla</p>
+                <div class="flex justify-between">
+                    <label for="grid" class="text-xl">{{ showGrid ? 'Ocultar' : 'Mostrar'}} Malla</label>
+                    <input type="checkbox" [(ngModel)]="showGrid" (change)="toggleGrid(showGrid)" id="grid">
+                </div>
+            </div>
+            <div class="w-full h-25 py-4 px-0 flex flex-col justify-around border-b-2 border-stone-300">
+                <p class="text-xl font-medium">Color de Fondo</p>
+                <div class="flex gap-1 items-center">
+                    <input type="color" [value]="getBackgroundColor()" (input)="onBackgroundColorChange($event)"
+                        id="bgColor" class="w-8 h-8 rounded-3xl outline-none border-none">
+                    <label for="bgColor" class="text-xl">{{getBackgroundColor()}}</label>
+                </div>
+            </div>
+            <div class="w-full h-25 py-4 px-0 flex flex-col justify-around border-b-2 border-stone-300">
+                <p class="text-xl font-medium">Exportar</p>
+                <div class="flex gap-1 justify-around items-center">
+                    <p-button label="Como PLY" severity="secondary" (click)="exportPLY()" />
+                    <p-button label="Como STL" severity="secondary" (click)="exportSTL()" />
+                </div>
+            </div>
+        </p-panel>
+    </div>
+    <div #rendererContainer class="w-full h-full">
+    </div>
+</section>
