@@ -184,8 +184,8 @@ export class Three implements AfterViewInit {
       })
 
       URL.revokeObjectURL(url)
-    } catch {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (FBX)' })
+    } catch(error) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Se produjo un error respecto al archivo. Chequee la versión del mismo por favor.' })
     }
   }
 
