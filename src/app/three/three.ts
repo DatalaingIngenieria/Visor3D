@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Component, ElementRef, OnInit, AfterViewInit, OnDestroy, ViewChild, NgZone } from '@angular/core';
 import { VisorService } from './services/visor-service';
+import { MessageService } from 'primeng/api';
 import { ThreeBases } from './models/three-bases'
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -16,10 +17,11 @@ import { STLExporter } from 'three/addons/exporters/STLExporter.js';
 import { ButtonModule } from 'primeng/button';
 import { PanelModule } from 'primeng/panel';
 import { Tooltip } from 'primeng/tooltip';
+import { ToastModule } from 'primeng/toast';
 
 @Component({
   selector: 'app-three',
-  imports: [CommonModule, FormsModule, ButtonModule, PanelModule, Tooltip],
+  imports: [CommonModule, FormsModule, ButtonModule, PanelModule, Tooltip, ToastModule],
   templateUrl: './three.html',
   styleUrl: './three.css'
 })
@@ -49,7 +51,7 @@ export class Three implements AfterViewInit {
     'las': 'Formato de archivo para datos de nubes de puntos LiDAR.',
   }
 
-  constructor(private visorService: VisorService) { }
+  constructor(private visorService: VisorService, private messageService: MessageService) { }
 
   ngOnInit(): void {
     this.formats = [
@@ -119,48 +121,60 @@ export class Three implements AfterViewInit {
         this.loadLAS(file)
         break;
       default:
-        alert('Error: Formato no Soportado')
+        this.messageService.add({ severity: 'error', summary: 'Error', text: 'Error: \n Formato no soportado' })
     }
   }
 
   loadOBJ(file: File): void {
-    const reader = new FileReader()
-    const loader = new OBJLoader()
-
-    reader.onload = (e) => {
-      this.clearPreviousModel()
-
-      const url = e.target?.result as string
-      this.model = loader.parse(url)
-      this.scene.add(this.model)
-      this.fitModelToView()
+    try{
+      const reader = new FileReader()
+      const loader = new OBJLoader()
+  
+      reader.onload = (e) => {
+        this.clearPreviousModel()
+  
+        const url = e.target?.result as string
+        this.model = loader.parse(url)
+        this.scene.add(this.model)
+        this.fitModelToView()
+      }
+  
+      reader.readAsText(file)
+    } catch{
+      this.messageService.add({ severity:'error', summary:'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (OBJ)'})
     }
-
-    reader.readAsText(file)
   }
 
   loadFBX(file: File): void {
-    const loader = new FBXLoader()
-    const url = URL.createObjectURL(file)
-
-    loader.load(url, (fbx) => {
-      this.clearPreviousModel()
-      this.scene.add(fbx)
-      this.fitModelToView()
-    })
-
-    URL.revokeObjectURL(url)
+    try {
+      const loader = new FBXLoader()
+      const url = URL.createObjectURL(file)
+  
+      loader.load(url, (fbx) => {
+        this.clearPreviousModel()
+        this.scene.add(fbx)
+        this.fitModelToView()
+      })
+  
+      URL.revokeObjectURL(url)
+    } catch {
+      this.messageService.add({ severity:'error', summary:'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (FBX)'})
+    }
   }
 
   loadGLTF(file: File): void {
-    const loader = new GLTFLoader()
-    const url = URL.createObjectURL(file)
+    try {
+      const loader = new GLTFLoader()
+      const url = URL.createObjectURL(file)
 
-    loader.load(url, (gltf) => {
-      this.clearPreviousModel()
-      this.scene.add(gltf.scene)
-      this.fitModelToView()
-    })
+      loader.load(url, (gltf) => {
+        this.clearPreviousModel()
+        this.scene.add(gltf.scene)
+        this.fitModelToView()
+      })
+    } catch {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (glTF)' })
+    }
   }
 
   async loadLAS(file: File): Promise<void> {
@@ -233,7 +247,7 @@ export class Three implements AfterViewInit {
       this.fitModelToView();
       URL.revokeObjectURL(url);
     } catch (error) {
-      alert(`Error al cargar LAS: ${error}`);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (LAS/LAZ)' })
     }
   }
 
@@ -252,12 +266,13 @@ export class Three implements AfterViewInit {
       URL.revokeObjectURL(url);
 
     } catch (error) {
-      alert('Error al cargar el archivo 3DM. Asegúrate de que el formato del archivo sea 3DM.');
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (3DM)' })
     }
   }
 
   exportPLY(): void {
     if (!this.model) {
+      this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Debe subir un modelo para poder exportarlo a este formato' })
       return
     }
 
@@ -279,6 +294,7 @@ export class Three implements AfterViewInit {
 
   exportSTL(): void {
     if (!this.model) {
+      this.messageService.add({ severity: 'warn', summary: 'Aviso', detail: 'Debe subir un modelo para poder exportarlo a este formato' })
       return
     }
 
