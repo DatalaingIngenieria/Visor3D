@@ -131,7 +131,7 @@ export class Three implements AfterViewInit {
     if (extension !== 'obj') {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error de Formato',
+        summary: 'Error',
         detail: 'El archivo no es de formato OBJ. Por favor, suba un archivo .obj'
       });
       return;
@@ -167,7 +167,7 @@ export class Three implements AfterViewInit {
     if (extension !== 'fbx') {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error de Formato',
+        summary: 'Error',
         detail: 'El archivo no es de formato FBX. Por favor, suba un archivo .fbx'
       });
       return;
@@ -195,7 +195,7 @@ export class Three implements AfterViewInit {
     if (extension !== 'gltf') {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error de Formato',
+        summary: 'Error',
         detail: 'El archivo no es de formato glTF. Por favor, suba un archivo .gltf'
       });
       return;
@@ -295,7 +295,7 @@ export class Three implements AfterViewInit {
     if (extension !== '3dm') {
       this.messageService.add({
         severity: 'error',
-        summary: 'Error de Formato',
+        summary: 'Error',
         detail: 'El archivo no es de formato 3DM. Por favor, suba un archivo .3dm'
       });
       return;
