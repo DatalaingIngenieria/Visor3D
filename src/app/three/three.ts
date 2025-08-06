@@ -126,43 +126,81 @@ export class Three implements AfterViewInit {
   }
 
   loadOBJ(file: File): void {
-    try{
-      const reader = new FileReader()
-      const loader = new OBJLoader()
-  
+    const extension = file.name.split('.').pop()?.toLowerCase();
+
+    if (extension !== 'obj') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error de Formato',
+        detail: 'El archivo no es de formato OBJ. Por favor, suba un archivo .obj'
+      });
+      return;
+    }
+
+    try {
+      const reader = new FileReader();
+      const loader = new OBJLoader();
+
       reader.onload = (e) => {
-        this.clearPreviousModel()
-  
-        const url = e.target?.result as string
-        this.model = loader.parse(url)
-        this.scene.add(this.model)
-        this.fitModelToView()
-      }
-  
-      reader.readAsText(file)
-    } catch{
-      this.messageService.add({ severity:'error', summary:'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (OBJ)'})
+        this.clearPreviousModel();
+        const url = e.target?.result as string;
+        this.model = loader.parse(url);
+        this.scene.add(this.model);
+        this.fitModelToView();
+      };
+
+      reader.readAsText(file);
+
+    } catch (error) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error de Carga',
+        detail: 'Ocurrió un error al cargar el modelo OBJ.'
+      });
+      console.error(error);
     }
   }
 
   loadFBX(file: File): void {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+
+    if (extension !== 'fbx') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error de Formato',
+        detail: 'El archivo no es de formato FBX. Por favor, suba un archivo .fbx'
+      });
+      return;
+    }
+
     try {
       const loader = new FBXLoader()
       const url = URL.createObjectURL(file)
-  
+
       loader.load(url, (fbx) => {
         this.clearPreviousModel()
         this.scene.add(fbx)
         this.fitModelToView()
       })
-  
+
       URL.revokeObjectURL(url)
     } catch {
-      this.messageService.add({ severity:'error', summary:'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (FBX)'})
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'El formato ingresado no es valido, asegurese de subir el formato correcto (FBX)' })
     }
   }
 
   loadGLTF(file: File): void {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+
+    if (extension !== 'gltf') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error de Formato',
+        detail: 'El archivo no es de formato glTF. Por favor, suba un archivo .gltf'
+      });
+      return;
+    }
+
     try {
       const loader = new GLTFLoader()
       const url = URL.createObjectURL(file)
@@ -252,6 +290,17 @@ export class Three implements AfterViewInit {
   }
 
   async load3DM(file: File): Promise<void> {
+    const extension = file.name.split('.').pop()?.toLowerCase();
+
+    if (extension !== '3dm') {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error de Formato',
+        detail: 'El archivo no es de formato 3DM. Por favor, suba un archivo .3dm'
+      });
+      return;
+    }
+
     try {
       const loader = new Rhino3dmLoader();
       const url = URL.createObjectURL(file);
